@@ -32,8 +32,7 @@ public class BookResolver {
      */
     @QueryMapping
     public Book bookById(@Argument String id) {
-        return bookRepository.findById(Long.valueOf(id))
-                .orElse(null);
+        throw new RuntimeException();
     }
 
     /**
@@ -44,7 +43,7 @@ public class BookResolver {
      */
     @QueryMapping
     public List<Book> allBooks() {
-        return bookRepository.findAll();
+        throw new RuntimeException();
     }
 
     /**
@@ -56,8 +55,7 @@ public class BookResolver {
      */
     @SchemaMapping
     public Author author(Book book) {
-        return authorRepository.findById(book.getAuthor().getId())
-                .orElseThrow(() -> new IllegalStateException("Author not found"));
+        throw new RuntimeException();
     }
 
     /**
@@ -68,8 +66,6 @@ public class BookResolver {
      */
     @SchemaMapping
     public List<Review> reviews(Book book) {
-        return book.getReviews().stream()
-                .sorted((r1, r2) -> r2.getRating().compareTo(r1.getRating()))
-                .collect(Collectors.toList());
+        throw new RuntimeException();
     }
 }
