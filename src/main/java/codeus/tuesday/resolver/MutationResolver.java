@@ -38,20 +38,7 @@ public class MutationResolver {
             @Argument String authorId,
             @Argument Integer publishYear,
             @Argument String genre) {
-
-        if (title == null || title.trim().isEmpty()) {
-            throw new IllegalArgumentException("Title cannot be empty");
-        }
-
-        Author author = authorRepository.findById(Long.valueOf(authorId))
-                .orElseThrow(() -> new IllegalArgumentException("Author not found"));
-
-        if (publishYear != null && publishYear > Year.now().getValue()) {
-            throw new IllegalArgumentException("Publish year cannot be in the future");
-        }
-
-        Book book = new Book(title, author, publishYear, genre);
-        return bookRepository.save(book);
+        throw new RuntimeException();
     }
 
     /**
@@ -69,18 +56,7 @@ public class MutationResolver {
             @Argument String bookId,
             @Argument Integer rating,
             @Argument String comment) {
-
-        if (rating == null || rating < 1 || rating > 5) {
-            throw new IllegalArgumentException("Rating must be between 1 and 5");
-        }
-
-        Book book = bookRepository.findById(Long.valueOf(bookId))
-                .orElseThrow(() -> new IllegalArgumentException("Book not found"));
-
-        Review review = new Review(rating, comment, book);
-        book.getReviews().add(review);
-        bookRepository.save(book);
-        return review;
+        throw new RuntimeException();
     }
 
     /**
@@ -97,29 +73,6 @@ public class MutationResolver {
             @Argument String title,
             @Argument Integer publishYear,
             @Argument String genre) {
-
-        Book book = bookRepository.findById(Long.valueOf(id))
-                .orElseThrow(() -> new IllegalArgumentException("Book not found"));
-
-        if (title != null) {
-            if (title.trim().isEmpty()) {
-                throw new IllegalArgumentException("Title cannot be empty");
-            }
-            book.setTitle(title);
-        }
-
-        if (publishYear != null) {
-            int currentYear = Year.now().getValue();
-            if (publishYear > currentYear) {
-                throw new IllegalArgumentException("Publish year cannot be in the future");
-            }
-            book.setPublishYear(publishYear);
-        }
-
-        if (genre != null) {
-            book.setGenre(genre);
-        }
-
-        return bookRepository.save(book);
+        throw new RuntimeException();
     }
 }
