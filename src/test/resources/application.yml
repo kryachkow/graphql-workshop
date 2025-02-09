@@ -1,0 +1,17 @@
+spring:
+  graphql:
+    path: /graphql
+    schema:
+      locations: classpath:graphql/
+  jpa:
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
+      open-in-view: false
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:

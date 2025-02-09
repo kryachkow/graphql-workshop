@@ -5,14 +5,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureGraphQlTester;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.graphql.test.tester.GraphQlTester;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(TestDataConfig.class)
+@AutoConfigureGraphQlTester
 class MutationResolverTest {
     @Autowired
     private GraphQlTester graphQlTester;
@@ -24,67 +26,61 @@ class MutationResolverTest {
         @DisplayName("Should successfully add a new book")
         void shouldAddNewBook() {
             String mutation = """
-                mutation {
-                    addBook(
-                        title: "New Test Book"
-                        authorId: "1"
-                        publishYear: 2023
-                        genre: "Fiction"
-                    ) {
-                        id
-                        title
-                        publishYear
-                        genre
-                        author {
-                            name
+                    mutation {
+                        addBook(
+                            title: "New Test Book"
+                            authorId: "1"
+                            publishYear: 2023
+                            genre: "Fiction"
+                        ) {
+                            id
+                            title
+                            publishYear
+                            genre
+                            author {
+                                name
+                            }
                         }
                     }
-                }
-                """;
+                    """;
 
             graphQlTester.document(mutation)
                     .execute()
                     .path("addBook")
                     .matchesJson("""
-                    {
-                        "title": "New Test Book",
-                        "publishYear": 2023,
-                        "genre": "Fiction",
-                        "author": {
-                            "name": "John Doe"
-                        }
-                    }
-                    """);
+                            {
+                                "title": "New Test Book",
+                                "publishYear": 2023,
+                                "genre": "Fiction",
+                                "author": {
+                                    "name": "John Doe"
+                                }
+                            }
+                            """);
         }
 
         @Test
         @DisplayName("Should fail when adding book with empty title")
         void shouldFailWithEmptyTitle() {
             String mutation = """
-                mutation {
-                    addBook(
-                        title: ""
-                        authorId: "1"
-                        publishYear: 2023
-                        genre: "Fiction"
-                    ) {
-                        id
-                    }
-                }
-                """;
+        mutation {
+            addBook(
+                title: ""
+                authorId: "1"
+                publishYear: 2023
+                genre: "Fiction"
+            ) {
+                id
+            }
+        }
+        """;
 
             graphQlTester.document(mutation)
                     .execute()
                     .errors()
-                    .satisfy(errors -> {
-                        assertThat(errors)
-                                .hasSize(1)
-                                .first()
-                                .satisfies(error ->
-                                        assertThat(error.getMessage())
-                                                .contains("Title cannot be empty")
-                                );
-                    });
+                    .expect(error ->
+                            error.getMessage().contains("Title cannot be empty")
+                    );
         }
     }
 
@@ -95,61 +91,58 @@ class MutationResolverTest {
         @DisplayName("Should successfully add a review")
         void shouldAddReview() {
             String mutation = """
-                mutation {
-                    addReview(
-                        bookId: "1"
-                        rating: 5
-                        comment: "Excellent read!"
-                    ) {
-                        rating
-                        comment
-                        book {
-                            title
+                    mutation {
+                        addReview(
+                            bookId: "1"
+                            rating: 5
+                            comment: "Excellent read!"
+                        ) {
+                            rating
+                            comment
+                            book {
+                                title
+                            }
                         }
                     }
-                }
-                """;
+                    """;
 
             graphQlTester.document(mutation)
                     .execute()
                     .path("addReview")
                     .matchesJson("""
-                    {
-                        "rating": 5,
-                        "comment": "Excellent read!",
-                        "book": {
-                            "title": "The Mystery House"
-                        }
-                    }
-                    """);
+                            {
+                                "rating": 5,
+                                "comment": "Excellent read!",
+                                "book": {
+                                    "title": "The Mystery House"
+                                }
+                            }
+                            """);
         }
 
         @Test
         @DisplayName("Should fail when rating is invalid")
         void shouldFailWithInvalidRating() {
             String mutation = """
-                mutation {
-                    addReview(
-                        bookId: "1"
-                        rating: 6
-                        comment: "Invalid rating"
-                    ) {
-                        id
-                    }
-                }
-                """;
+        mutation {
+            addReview(
+                bookId: "1"
+                rating: 6
+                comment: "Invalid rating"
+            ) {
+                id
+            }
+        }
+        """;
 
             graphQlTester.document(mutation)
                     .execute()
                     .errors()
                     .satisfy(errors -> {
                         assertThat(errors)
-                                .hasSize(1)
-                                .first()
-                                .satisfies(error ->
-                                        assertThat(error.getMessage())
-                                                .contains("Rating must be between 1 and 5")
-                                );
+                                .hasSize(1);
+                        assertThat(errors.get(0).getMessage())
+                                .contains("Rating must be between 1 and 5");
                     });
         }
     }

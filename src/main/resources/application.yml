@@ -40,11 +40,6 @@ spring:
       settings:
         web-allow-others: true
 
-  # Initial data loading
-  sql:
-    init:
-      mode: always
-      data-locations: classpath:data.sql
 
 # Server Configuration
 server:

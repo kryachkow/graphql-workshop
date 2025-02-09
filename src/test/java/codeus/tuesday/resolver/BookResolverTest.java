@@ -1,8 +1,6 @@
 package codeus.tuesday.resolver;
 
 import codeus.tuesday.TestDataConfig;
-import codeus.tuesday.model.Book;
-import codeus.tuesday.model.Review;
 import lombok.Data;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -16,10 +14,10 @@ import org.springframework.graphql.test.tester.GraphQlTester;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(TestDataConfig.class)
+@AutoConfigureGraphQlTester
 class BookResolverTest {
     @Autowired
     private GraphQlTester graphQlTester;
@@ -31,42 +29,42 @@ class BookResolverTest {
         @DisplayName("Should return book when valid ID is provided")
         void shouldReturnBookById() {
             String query = """
-                query {
-                    bookById(id: "1") {
-                        id
-                        title
-                        author {
-                            name
+                    query {
+                        bookById(id: "1") {
+                            id
+                            title
+                            author {
+                                name
+                            }
                         }
                     }
-                }
-                """;
+                    """;
 
             graphQlTester.document(query)
                     .execute()
                     .path("bookById")
                     .matchesJson("""
-                    {
-                        "id": "1",
-                        "title": "The Mystery House",
-                        "author": {
-                            "name": "John Doe"
-                        }
-                    }
-                    """);
+                            {
+                                "id": "1",
+                                "title": "The Mystery House",
+                                "author": {
+                                    "name": "John Doe"
+                                }
+                            }
+                            """);
         }
 
         @Test
         @DisplayName("Should return null when book ID doesn't exist")
         void shouldReturnNullForNonExistentBook() {
             String query = """
-                query {
-                    bookById(id: "999") {
-                        id
-                        title
+                    query {
+                        bookById(id: "999") {
+                            id
+                            title
+                        }
                     }
-                }
-                """;
+                    """;
 
             graphQlTester.document(query)
                     .execute()
@@ -82,16 +80,16 @@ class BookResolverTest {
         @DisplayName("Should return all books")
         void shouldReturnAllBooks() {
             String query = """
-                query {
-                    allBooks {
-                        id
-                        title
-                        author {
-                            name
+                    query {
+                        allBooks {
+                            id
+                            title
+                            author {
+                                name
+                            }
                         }
                     }
-                }
-                """;
+                    """;
 
             graphQlTester.document(query)
                     .execute()
@@ -113,28 +111,28 @@ class BookResolverTest {
         @DisplayName("Should return author details for book")
         void shouldReturnAuthorForBook() {
             String query = """
-                query {
-                    bookById(id: "1") {
-                        title
-                        author {
-                            id
-                            name
-                            biography
+                    query {
+                        bookById(id: "1") {
+                            title
+                            author {
+                                id
+                                name
+                                biography
+                            }
                         }
                     }
-                }
-                """;
+                    """;
 
             graphQlTester.document(query)
                     .execute()
                     .path("bookById.author")
                     .matchesJson("""
-                    {
-                        "id": "1",
-                        "name": "John Doe",
-                        "biography": "Famous mystery writer"
-                    }
-                    """);
+                            {
+                                "id": "1",
+                                "name": "John Doe",
+                                "biography": "Famous mystery writer"
+                            }
+                            """);
         }
     }
 
@@ -145,15 +143,15 @@ class BookResolverTest {
         @DisplayName("Should return sorted reviews for book")
         void shouldReturnSortedReviews() {
             String query = """
-                query {
-                    bookById(id: "1") {
-                        reviews {
-                            rating
-                            comment
+                    query {
+                        bookById(id: "1") {
+                            reviews {
+                                rating
+                                comment
+                            }
                         }
                     }
-                }
-                """;
+                    """;
 
             graphQlTester.document(query)
                     .execute()
@@ -168,7 +166,7 @@ class BookResolverTest {
     }
 
     @Data
-    class BookResponse {
+    static class BookResponse {
         private String id;
         private String title;
         private AuthorResponse author;
@@ -176,14 +174,14 @@ class BookResolverTest {
     }
 
     @Data
-    class AuthorResponse {
+    static class AuthorResponse {
         private String id;
         private String name;
         private String biography;
     }
 
     @Data
-    class ReviewResponse {
+    static class ReviewResponse {
         private String id;
         private Integer rating;
         private String comment;
