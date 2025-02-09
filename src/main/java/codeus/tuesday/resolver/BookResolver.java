@@ -24,6 +24,10 @@ public class BookResolver {
 
     /**
      * TODO: Exercise 1
+     * Implement a query to fetch a book by its ID
+     * - Use bookRepository.findById()
+     * - Convert the ID from String to Long
+     * - Return null if book is not found
      */
     @QueryMapping
     public Book bookById(@Argument String id) {
@@ -33,6 +37,9 @@ public class BookResolver {
 
     /**
      * TODO: Exercise 2
+     * Implement a query to fetch all books
+     * - Use bookRepository.findAll()
+     * - Return List<Book>
      */
     @QueryMapping
     public List<Book> allBooks() {
@@ -42,6 +49,10 @@ public class BookResolver {
 
     /**
      * TODO: Exercise 3
+     * Implement a resolver for Book.author field
+     * - This method will be called for each Book when author field is requested
+     * - Use authorRepository to fetch the author
+     * - Handle the case when author is not found
      */
     @SchemaMapping
     public Author author(Book book) {
@@ -51,6 +62,9 @@ public class BookResolver {
 
     /**
      * TODO: Exercise 4
+     * Implement a resolver for Book.reviews field
+     * - Return all reviews for a given book
+     * - Reviews should be sorted by rating (highest first)
      */
     @SchemaMapping
     public List<Review> reviews(Book book) {
