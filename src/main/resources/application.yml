@@ -1,0 +1,72 @@
+spring:
+  graphql:
+    graphiql:
+      enabled: true
+      path: /graphiql
+    schema:
+      printer:
+        enabled: true
+    path: /graphql
+    websocket:
+      path: /graphql-ws
+    cors:
+      allowed-origins: "*"
+      allowed-methods: GET, POST, OPTIONS
+      max-age: 3600
+
+  # H2 Database Configuration
+  datasource:
+    url: jdbc:h2:mem:workshopdb
+    username: sa
+    password: password
+    driverClassName: org.h2.Driver
+
+  # JPA Configuration
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    defer-datasource-initialization: true
+
+  # H2 Console Configuration
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        web-allow-others: true
+
+  # Initial data loading
+  sql:
+    init:
+      mode: always
+      data-locations: classpath:data.sql
+
+# Server Configuration
+server:
+  port: 8080
+  error:
+    include-message: always
+    include-binding-errors: always
+
+# Logging Configuration
+logging:
+  level:
+    org.springframework.graphql: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    com.workshop.graphql: DEBUG
+
+# Custom Application Properties
+app:
+  validation:
+    max-rating: 5
+    min-rating: 1
+    min-publish-year: 1900
+  pagination:
+    default-page-size: 10
+    max-page-size: 50
