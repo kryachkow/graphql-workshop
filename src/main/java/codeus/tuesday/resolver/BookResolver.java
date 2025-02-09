@@ -11,6 +11,7 @@ import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class BookResolver {
@@ -31,8 +32,8 @@ public class BookResolver {
      */
     @QueryMapping
     public Book bookById(@Argument String id) {
-        // Add your code here
-        throw new UnsupportedOperationException("Implement bookById method");
+        return bookRepository.findById(Long.valueOf(id))
+                .orElse(null);
     }
 
     /**
@@ -43,8 +44,7 @@ public class BookResolver {
      */
     @QueryMapping
     public List<Book> allBooks() {
-        // Add your code here
-        throw new UnsupportedOperationException("Implement allBooks method");
+        return bookRepository.findAll();
     }
 
     /**
@@ -56,8 +56,8 @@ public class BookResolver {
      */
     @SchemaMapping
     public Author author(Book book) {
-        // Add your code here
-        throw new UnsupportedOperationException("Implement author method");
+        return authorRepository.findById(book.getAuthor().getId())
+                .orElseThrow(() -> new IllegalStateException("Author not found"));
     }
 
     /**
@@ -68,7 +68,8 @@ public class BookResolver {
      */
     @SchemaMapping
     public List<Review> reviews(Book book) {
-        // Add your code here
-        throw new UnsupportedOperationException("Implement reviews method");
+        return book.getReviews().stream()
+                .sorted((r1, r2) -> r2.getRating().compareTo(r1.getRating()))
+                .collect(Collectors.toList());
     }
 }
