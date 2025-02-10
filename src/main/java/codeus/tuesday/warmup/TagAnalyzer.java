@@ -29,44 +29,7 @@ public class TagAnalyzer {
      * "<1a></1a>" → false (numbers not allowed)
      */
     public boolean isValid(String text) {
-        Stack<String> tags = new Stack<>();
-        Matcher matcher = TAG_PATTERN.matcher(text);
-
-        // Keep track of the last match end position
-        int lastEnd = 0;
-
-        while (matcher.find()) {
-            // Check if there's a gap between matches that contains '<'
-            if (text.substring(lastEnd, matcher.start()).contains("<")) {
-                return false;
-            }
-            lastEnd = matcher.end();
-
-            String tagContent = matcher.group(1);
-
-            // Validate tag content format
-            if (!VALID_TAG_NAME.matcher(tagContent).matches()) {
-                return false;
-            }
-
-            boolean isClosing = tagContent.startsWith("/");
-            String tagName = isClosing ? tagContent.substring(1) : tagContent;
-
-            if (isClosing) {
-                if (tags.isEmpty() || !tags.pop().equals(tagName)) {
-                    return false;
-                }
-            } else {
-                tags.push(tagName);
-            }
-        }
-
-        // Check if there's any remaining '<' after the last match
-        if (text.substring(lastEnd).contains("<")) {
-            return false;
-        }
-
-        return tags.isEmpty();
+       throw new RuntimeException("Unfinished");
     }
 }
 
