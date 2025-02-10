@@ -31,4 +31,5 @@ type Query {
 type Mutation {
     addBook(title: String!, authorId: ID!, publishYear: Int, genre: String): Book
     addReview(bookId: ID!, rating: Int!, comment: String): Review
+    updateBook(id: ID!, title: String, publishYear: Int, genre: String): Book
 }

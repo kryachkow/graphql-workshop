@@ -97,15 +97,20 @@ public class MutationResolver {
             @Argument String title,
             @Argument Integer publishYear,
             @Argument String genre) {
+
         Book book = bookRepository.findById(Long.valueOf(id))
                 .orElseThrow(() -> new IllegalArgumentException("Book not found"));
 
-        if (title != null && !title.trim().isEmpty()) {
+        if (title != null) {
+            if (title.trim().isEmpty()) {
+                throw new IllegalArgumentException("Title cannot be empty");
+            }
             book.setTitle(title);
         }
 
         if (publishYear != null) {
-            if (publishYear > Year.now().getValue()) {
+            int currentYear = Year.now().getValue();
+            if (publishYear > currentYear) {
                 throw new IllegalArgumentException("Publish year cannot be in the future");
             }
             book.setPublishYear(publishYear);
