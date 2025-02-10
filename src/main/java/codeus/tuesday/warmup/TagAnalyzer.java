@@ -27,6 +27,23 @@ public class TagAnalyzer {
      * "text" → true (no tags is valid)
      * "<a><b>" → false
      * "<1a></1a>" → false (numbers not allowed)
+     *
+     * Implementation steps:
+     * 1. Initialize stack to store opening tags
+     * 2. Create matcher to find all tag patterns in text
+     * 3. Track position of last valid tag match
+     * 4. For each found tag:
+     *    a. Check no '<' exists between valid tags
+     *    b. Extract tag content between < >
+     *    c. Validate tag name contains only letters
+     *    d. If closing tag (starts with /):
+     *       - Check stack has matching opening tag
+     *       - Pop and compare with current tag name
+     *    e. If opening tag:
+     *       - Push to stack
+     * 5. Check no stray '<' after last valid tag
+     * 6. Verify all tags were closed (stack empty)
+     *
      */
     public boolean isValid(String text) {
         Stack<String> tags = new Stack<>();
